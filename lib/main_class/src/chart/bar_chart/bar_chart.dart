@@ -1,126 +1,124 @@
 import 'package:animated_fl_chart/animated_fl_chart.dart';
-import 'package:animated_fl_chart/main_class/src/chart/bar_chart/bar_chart_renderer.dart';
-import 'package:animated_fl_chart/main_class/src/chart/base/axis_chart/axis_chart_scaffold_widget.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-/// Renders a bar chart as a widget, using provided [BarChartData].
-class BarChart extends ImplicitlyAnimatedWidget {
-  /// [data] determines how the [BarChart] should be look like,
-  /// when you make any change in the [BarChartData], it updates
-  /// new values with animation, and duration is [swapAnimationDuration].
-  /// also you can change the [swapAnimationCurve]
-  /// which default is [Curves.linear].
-  const BarChart(
-    this.data, {
-    this.chartRendererKey,
-    super.key,
-    Duration swapAnimationDuration = const Duration(milliseconds: 150),
-    Curve swapAnimationCurve = Curves.linear,
-  }) : super(
-          duration: swapAnimationDuration,
-          curve: swapAnimationCurve,
+class BarChart extends StatefulWidget {
+  const BarChart(this.data,
+      {this.chartRendererKey,
+      super.key,
+      this.swapAnimationDuration = const Duration(milliseconds: 150),
+      this.swapAnimationCurve = Curves.linear,
+      this.randerAnimation = false,
+      this.initialShowingBarGroups})
+      : super(
+        // duration: swapAnimationDuration,
+        // curve: swapAnimationCurve,
         );
 
-  /// Determines how the [BarChart] should be look like.
+  /// Determines how the [BarChartWidget] should be look like.
   final BarChartData data;
 
   /// We pass this key to our renderers which are supposed to
   /// render the chart itself (without anything around the chart).
   final Key? chartRendererKey;
 
-  /// Creates a [BarChartState]
+  final Duration? swapAnimationDuration;
+  final Curve? swapAnimationCurve;
+  final bool? randerAnimation;
+  final List<BarChartGroupData>? initialShowingBarGroups;
+
   @override
-  BarChartState createState() => BarChartState();
+  State<StatefulWidget> createState() => BarChartState();
 }
 
-class BarChartState extends AnimatedWidgetBaseState<BarChart> {
-  /// we handle under the hood animations (implicit animations) via this tween,
-  /// it lerps between the old [BarChartData] to the new one.
-  BarChartDataTween? _barChartDataTween;
+class BarChartState extends State<BarChart> {
+  final Color leftBarColor = const Color(0xFFFFC300);
+  final Color rightBarColor = const Color(0xFFE80054);
+  final Color endBarColor = const Color(0xFF3BFF49);
+  final Color avgColor = const Color(0xFFFF683B);
 
-  /// If [BarTouchData.handleBuiltInTouches] is true, we override the callback to handle touches internally,
-  /// but we need to keep the provided callback to notify it too.
-  BaseTouchCallback<BarTouchResponse>? _providedTouchCallback;
+  List<BarChartGroupData> initialShowingBarGroups = [];
 
-  final Map<int, List<int>> _showingTouchedTooltips = {};
+  final Duration animDuration = const Duration(milliseconds: 250);
+  bool isPlaying = false;
+
+  int touchedGroupIndex = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    initialData();
+
+    if (widget.randerAnimation!) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+            refreshState();
+          }
+        });
+      });
+    }
+  }
+
+  void initialData() {
+    // log("DATA : " + widget.data.barGroups.toString());
+    List<BarChartGroupData> barChartGroupData = [];
+    if (widget.initialShowingBarGroups == null ||
+        widget.initialShowingBarGroups!.isEmpty) {
+      widget.data.barGroups.asMap().forEach((key1, value) {
+        List<BarChartRodData> barChartRodData = [];
+        widget.data.barGroups[key1].barRods.asMap().forEach((key2, value) {
+          barChartRodData.add(widget.data.barGroups[key1].barRods[key2]
+              .copyWith(fromY: 0, toY: 0));
+        });
+
+        barChartGroupData.add(
+            widget.data.barGroups[key1].copyWith(barRods: barChartRodData));
+      });
+    } else {
+      barChartGroupData.addAll(widget.initialShowingBarGroups!);
+    }
+
+    // log("DATA_INITIAL : " + barChartGroupData.toString());
+
+    initialShowingBarGroups = barChartGroupData;
+  }
+
+  Future<dynamic> refreshState() async {
+    setState(() {});
+    await Future<dynamic>.delayed(
+      animDuration + const Duration(milliseconds: 50),
+    );
+    if (isPlaying) {
+      await refreshState();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final showingData = _getData();
-
-    return AxisChartScaffoldWidget(
-      data: showingData,
-      chart: BarChartLeaf(
-        data: _withTouchedIndicators(_barChartDataTween!.evaluate(animation)),
-        targetData: _withTouchedIndicators(showingData),
-        key: widget.chartRendererKey,
+    return BarChartWidget(
+      BarChartData(
+        maxY: widget.data.maxY,
+        barTouchData: widget.data.barTouchData,
+        titlesData: widget.data.titlesData,
+        borderData: widget.data.borderData,
+        barGroups: widget.randerAnimation!
+            ? isPlaying
+                ? widget.data.barGroups
+                : initialShowingBarGroups
+            : widget.data.barGroups,
+        gridData: widget.data.gridData,
+        alignment: widget.data.alignment,
+        backgroundColor: widget.data.backgroundColor,
+        baselineY: widget.data.baselineY,
+        extraLinesData: widget.data.extraLinesData,
+        groupsSpace: widget.data.groupsSpace,
+        minY: widget.data.minY,
+        rangeAnnotations: widget.data.rangeAnnotations,
       ),
+      swapAnimationDuration: animDuration,
+      swapAnimationCurve: widget.swapAnimationCurve!,
+      chartRendererKey: widget.chartRendererKey,
     );
-  }
-
-  BarChartData _withTouchedIndicators(BarChartData barChartData) {
-    if (!barChartData.barTouchData.enabled ||
-        !barChartData.barTouchData.handleBuiltInTouches) {
-      return barChartData;
-    }
-
-    final newGroups = <BarChartGroupData>[];
-    for (var i = 0; i < barChartData.barGroups.length; i++) {
-      final group = barChartData.barGroups[i];
-
-      newGroups.add(
-        group.copyWith(
-          showingTooltipIndicators: _showingTouchedTooltips[i],
-        ),
-      );
-    }
-
-    return barChartData.copyWith(
-      barGroups: newGroups,
-    );
-  }
-
-  BarChartData _getData() {
-    final barTouchData = widget.data.barTouchData;
-    if (barTouchData.enabled && barTouchData.handleBuiltInTouches) {
-      _providedTouchCallback = barTouchData.touchCallback;
-      return widget.data.copyWith(
-        barTouchData: widget.data.barTouchData
-            .copyWith(touchCallback: _handleBuiltInTouch),
-      );
-    }
-    return widget.data;
-  }
-
-  void _handleBuiltInTouch(
-    AFlTouchEvent event,
-    BarTouchResponse? touchResponse,
-  ) {
-    _providedTouchCallback?.call(event, touchResponse);
-
-    if (!event.isInterestedForInteractions ||
-        touchResponse == null ||
-        touchResponse.spot == null) {
-      setState(_showingTouchedTooltips.clear);
-      return;
-    }
-    setState(() {
-      final spot = touchResponse.spot!;
-      final groupIndex = spot.touchedBarGroupIndex;
-      final rodIndex = spot.touchedRodDataIndex;
-
-      _showingTouchedTooltips.clear();
-      _showingTouchedTooltips[groupIndex] = [rodIndex];
-    });
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _barChartDataTween = visitor(
-      _barChartDataTween,
-      widget.data,
-      (dynamic value) =>
-          BarChartDataTween(begin: value as BarChartData, end: widget.data),
-    ) as BarChartDataTween?;
   }
 }

@@ -198,7 +198,7 @@ class LineChartData extends AxisChartData with EquatableMixin {
 
 /// Holds data for drawing each individual line in the [LineChart]
 class LineChartBarData with EquatableMixin {
-  /// [BarChart] draws some lines and overlaps them in the chart's view,
+  /// [BarChartWidget] draws some lines and overlaps them in the chart's view,
   /// You can have multiple lines by splitting them,
   /// put a [AFlSpot.nullSpot] between each section.
   /// each line passes through [spots], with hard edges by default,

@@ -1,6 +1,7 @@
 library animated_fl_chart;
 
 export 'main_class/src/chart/bar_chart/bar_chart.dart';
+export 'main_class/src/chart/bar_chart/bar_chart_widget.dart';
 export 'main_class/src/chart/bar_chart/bar_chart_data.dart';
 export 'main_class/src/chart/base/axis_chart/axis_chart_data.dart';
 export 'main_class/src/chart/base/axis_chart/axis_chart_widgets.dart';
