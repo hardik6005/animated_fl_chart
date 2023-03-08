@@ -1,0 +1,15 @@
+import 'package:animated_fl_chart/animated_fl_chart.dart';
+
+/// Defines extensions on the [List<RadarDataSet>]
+extension DashedPath on List<RadarDataSet> {
+  /// check all the [RadarDataSet] has a same [dataEntries] length
+  bool get hasEqualDataEntriesLength {
+    if (length == 0) return false;
+
+    final firstDataEntriesLength = this[0].dataEntries.length;
+
+    return every(
+      (element) => element.dataEntries.length == firstDataEntriesLength,
+    );
+  }
+}
