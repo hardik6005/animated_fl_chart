@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:animated_fl_chart/animated_fl_chart.dart';
