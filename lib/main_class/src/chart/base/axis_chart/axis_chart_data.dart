@@ -931,10 +931,10 @@ class VerticalRangeAnnotation with EquatableMixin {
 
 /// Holds data for drawing extra horizontal lines.
 ///
-/// [LineChart] draws some [HorizontalLine] (set by [LineChartData.extraLinesData]),
+/// [LineChartWidget] draws some [HorizontalLine] (set by [LineChartData.extraLinesData]),
 /// in below or above of everything, it draws from left to right side of the chart.
 class HorizontalLine extends AFlLine with EquatableMixin {
-  /// [LineChart] draws horizontal lines from left to right side of the chart
+  /// [LineChartWidget] draws horizontal lines from left to right side of the chart
   /// in the provided [y] value, and color it using [color].
   /// You can define the thickness using [strokeWidth]
   ///
@@ -998,10 +998,10 @@ class HorizontalLine extends AFlLine with EquatableMixin {
 
 /// Holds data for drawing extra vertical lines.
 ///
-/// [LineChart] draws some [VerticalLine] (set by [LineChartData.extraLinesData]),
+/// [LineChartWidget] draws some [VerticalLine] (set by [LineChartData.extraLinesData]),
 /// in below or above of everything, it draws from bottom to top side of the chart.
 class VerticalLine extends AFlLine with EquatableMixin {
-  /// [LineChart] draws vertical lines from bottom to top side of the chart
+  /// [LineChartWidget] draws vertical lines from bottom to top side of the chart
   /// in the provided [x] value, and color it using [color].
   /// You can define the thickness using [strokeWidth]
   ///
@@ -1243,9 +1243,9 @@ class SizedPicture with EquatableMixin {
       ];
 }
 
-/// Draws some straight horizontal or vertical lines in the [LineChart]
+/// Draws some straight horizontal or vertical lines in the [LineChartWidget]
 class ExtraLinesData with EquatableMixin {
-  /// [LineChart] draws some straight horizontal or vertical lines,
+  /// [LineChartWidget] draws some straight horizontal or vertical lines,
   /// you should set [LineChartData.extraLinesData].
   /// Draws horizontal lines using [horizontalLines],
   /// and vertical lines using [verticalLines].

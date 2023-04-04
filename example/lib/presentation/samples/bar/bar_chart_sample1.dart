@@ -68,7 +68,7 @@ class BarChartSample1State extends State<BarChartSample1> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: BarChart(
-                      /*isPlaying ? randomData() : */ mainBarData(),
+                      mainBarData(),
                       swapAnimationDuration: animDuration,
                       randerAnimation: true,
                       initialShowingBarGroups: showingGroupsZero(),
@@ -137,6 +137,7 @@ class BarChartSample1State extends State<BarChartSample1> {
         }
       });
 
+  //Sample Data If you want to Pass Initial Data Your Own
   List<BarChartGroupData> showingGroupsZero() => List.generate(7, (i) {
         switch (i) {
           case 0:

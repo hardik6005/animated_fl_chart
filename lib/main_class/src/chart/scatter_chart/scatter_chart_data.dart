@@ -33,7 +33,7 @@ class ScatterChartData extends AxisChartData with EquatableMixin {
   /// on top of each [ScatterChartData.scatterSpots] using [showingTooltipIndicators],
   /// just put spot indices you want to show it on top of them.
   ///
-  /// [clipData] forces the [LineChart] to draw lines inside the chart bounding box.
+  /// [clipData] forces the [LineChartWidget] to draw lines inside the chart bounding box.
   ScatterChartData({
     List<ScatterSpot>? scatterSpots,
     AFlTitlesData? titlesData,

@@ -1,119 +1,82 @@
-import 'package:animated_fl_chart/main_class/src/chart/pie_chart/pie_chart_data.dart';
-import 'package:animated_fl_chart/main_class/src/chart/pie_chart/pie_chart_renderer.dart';
+import 'package:animated_fl_chart/animated_fl_chart.dart';
 import 'package:flutter/material.dart';
 
-/// Renders a pie chart as a widget, using provided [PieChartData].
-class PieChart extends ImplicitlyAnimatedWidget {
-  /// [data] determines how the [PieChart] should be look like,
-  /// when you make any change in the [PieChartData], it updates
-  /// new values with animation, and duration is [swapAnimationDuration].
-  /// also you can change the [swapAnimationCurve]
-  /// which default is [Curves.linear].
-  const PieChart(
-    this.data, {
-    super.key,
-    Duration swapAnimationDuration = defaultDuration,
-    Curve swapAnimationCurve = Curves.linear,
-  }) : super(
-          duration: swapAnimationDuration,
-          curve: swapAnimationCurve,
-        );
+class PieChart extends StatefulWidget {
+  const PieChart(this.data,
+      {super.key,
+      this.randerAnimation = false,
+      this.swapAnimationDuration = const Duration(milliseconds: 150),
+      this.swapAnimationCurve = Curves.linear});
 
-  /// Default duration to reuse externally.
-  static const defaultDuration = Duration(milliseconds: 150);
-
-  /// Determines how the [PieChart] should be look like.
   final PieChartData data;
+  final bool randerAnimation;
+  final Duration swapAnimationDuration;
+  final Curve swapAnimationCurve;
 
-  /// Creates a [PieChartState]
   @override
-  PieChartState createState() => PieChartState();
+  State<StatefulWidget> createState() => PieChartState();
 }
 
-class PieChartState extends AnimatedWidgetBaseState<PieChart> {
-  /// We handle under the hood animations (implicit animations) via this tween,
-  /// it lerps between the old [PieChartData] to the new one.
-  PieChartDataTween? _pieChartDataTween;
+class PieChartState extends State<PieChart> {
+  final Color leftBarColor = const Color(0xFFFFC300);
+  final Color rightBarColor = const Color(0xFFE80054);
+  final Color endBarColor = const Color(0xFF3BFF49);
+  final Color avgColor = const Color(0xFFFF683B);
+
+  List<PieChartSectionData> initialData = [];
+
+  final Duration animDuration = const Duration(milliseconds: 500);
+  bool isPlaying = false;
 
   @override
   void initState() {
-    /// Make sure that [_widgetsPositionHandler] is updated.
-    _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-
     super.initState();
+
+    initialDataSet();
+
+    if (widget.randerAnimation) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+            refreshState();
+          }
+        });
+      });
+    }
   }
 
-  /// This allows a value of type T or T? to be treated as a value of type T?.
-  ///
-  /// We use this so that APIs that have become non-nullable can still be used
-  /// with `!` and `?` to support older versions of the API as well.
-  T? _ambiguate<T>(T? value) => value;
-
-  @override
-  Widget build(BuildContext context) {
-    final showingData = _getData();
-
-    return PieChartLeaf(
-      data: _pieChartDataTween!.evaluate(animation),
-      targetData: showingData,
+  Future<dynamic> refreshState() async {
+    setState(() {});
+    await Future<dynamic>.delayed(
+      animDuration + const Duration(milliseconds: 50),
     );
-  }
-
-  /// if builtIn touches are enabled, we should recreate our [pieChartData]
-  /// to handle built in touches
-  PieChartData _getData() {
-    return widget.data;
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _pieChartDataTween = visitor(
-      _pieChartDataTween,
-      widget.data,
-      (dynamic value) =>
-          PieChartDataTween(begin: value as PieChartData, end: widget.data),
-    ) as PieChartDataTween?;
-  }
-}
-
-/// Positions the badge widgets on their respective sections.
-class BadgeWidgetsDelegate extends MultiChildLayoutDelegate {
-  BadgeWidgetsDelegate({
-    required this.badgeWidgetsCount,
-    required this.badgeWidgetsOffsets,
-  });
-  final int badgeWidgetsCount;
-  final Map<int, Offset> badgeWidgetsOffsets;
-
-  @override
-  void performLayout(Size size) {
-    for (var index = 0; index < badgeWidgetsCount; index++) {
-      final key = badgeWidgetsOffsets.keys.elementAt(index);
-
-      final finalSize = layoutChild(
-        key,
-        BoxConstraints(
-          maxWidth: size.width,
-          maxHeight: size.height,
-        ),
-      );
-
-      positionChild(
-        key,
-        Offset(
-          badgeWidgetsOffsets[key]!.dx - (finalSize.width / 2),
-          badgeWidgetsOffsets[key]!.dy - (finalSize.height / 2),
-        ),
-      );
+    if (isPlaying) {
+      await refreshState();
     }
   }
 
   @override
-  bool shouldRelayout(BadgeWidgetsDelegate oldDelegate) {
-    return oldDelegate.badgeWidgetsOffsets != badgeWidgetsOffsets;
+  Widget build(BuildContext context) {
+    return PieChartWidget(
+      PieChartData(
+        borderData: widget.data.borderData,
+        startDegreeOffset: widget.data.startDegreeOffset,
+        sectionsSpace: widget.data.sectionsSpace,
+        centerSpaceColor: widget.data.centerSpaceColor,
+        centerSpaceRadius: widget.data.centerSpaceRadius,
+        pieTouchData: widget.data.pieTouchData,
+        sections: widget.randerAnimation
+            ? isPlaying
+                ? widget.data.sections
+                : initialData
+            : widget.data.sections,
+      ),
+      swapAnimationDuration: animDuration,
+    );
+  }
+
+  void initialDataSet() {
+    initialData.add(widget.data.sections[0].copyWith(value: 1, title: ""));
   }
 }

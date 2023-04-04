@@ -3,7 +3,7 @@
 💥 Animated FL Chart is a highly customizable Flutter chart library that supports Line Chart, Bar Chart, Pie Chart, Scatter Chart, and Radar Chart. Chart with rander animation. 💥
 
 ## Chart Types
-
+ 
 Currently, we have 2 examples of animation bar charts. **We updating soon for another chart with animation.**
 
 |BarChart	|

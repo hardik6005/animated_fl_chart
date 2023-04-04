@@ -6,12 +6,12 @@ import 'package:animated_fl_chart/animated_fl_chart.dart';
 import 'package:animated_fl_chart/main_class/src/utils/lerp.dart';
 import 'package:flutter/material.dart';
 
-/// [PieChart] needs this class to render itself.
+/// [PieChartWidget] needs this class to render itself.
 ///
 /// It holds data needed to draw a pie chart,
 /// including pie sections, colors, ...
 class PieChartData extends BaseChartData with EquatableMixin {
-  /// [PieChart] draws some [sections] in a circle,
+  /// [PieChartWidget] draws some [sections] in a circle,
   /// and applies free space with radius [centerSpaceRadius],
   /// and color [centerSpaceColor] in the center of the circle,
   /// if you don't want it, set [centerSpaceRadius] to zero.
@@ -42,7 +42,7 @@ class PieChartData extends BaseChartData with EquatableMixin {
           touchData: pieTouchData ?? PieTouchData(),
         );
 
-  /// Defines showing sections of the [PieChart].
+  /// Defines showing sections of the [PieChartWidget].
   final List<PieChartSectionData> sections;
 
   /// Radius of free space in center of the circle.
@@ -54,7 +54,7 @@ class PieChartData extends BaseChartData with EquatableMixin {
   /// Defines gap between sections.
   final double sectionsSpace;
 
-  /// [PieChart] draws [sections] from zero degree (right side of the circle) clockwise.
+  /// [PieChartWidget] draws [sections] from zero degree (right side of the circle) clockwise.
   final double startDegreeOffset;
 
   /// Handles touch behaviors and responses.
@@ -123,9 +123,9 @@ class PieChartData extends BaseChartData with EquatableMixin {
       ];
 }
 
-/// Holds data related to drawing each [PieChart] section.
+/// Holds data related to drawing each [PieChartWidget] section.
 class PieChartSectionData {
-  /// [PieChart] draws section from right side of the circle (0 degrees),
+  /// [PieChartWidget] draws section from right side of the circle (0 degrees),
   /// each section have a [value] that determines how much it should occupy,
   /// this is depends on sum of all sections, each section should
   /// occupy ([value] / sumValues) * 360 degrees.
@@ -138,7 +138,7 @@ class PieChartSectionData {
   /// [titlePositionPercentageOffset] to have your desire design,
   /// it should be between 0.0 to 1.0,
   /// 0.0 means near the center,
-  /// 1.0 means near the outside of the [PieChart].
+  /// 1.0 means near the outside of the [PieChartWidget].
   ///
   /// If [badgeWidget] is not null, it draws a widget at the middle of section,
   /// by default it draws the widget at the middle of section, but you can change the
@@ -200,14 +200,14 @@ class PieChartSectionData {
   ///
   /// It should be between 0.0 to 1.0,
   /// 0.0 means near the center,
-  /// 1.0 means near the outside of the [PieChart].
+  /// 1.0 means near the outside of the [PieChartWidget].
   final double titlePositionPercentageOffset;
 
   /// Defines position of badge widget in the section.
   ///
   /// It should be between 0.0 to 1.0,
   /// 0.0 means near the center,
-  /// 1.0 means near the outside of the [PieChart].
+  /// 1.0 means near the outside of the [PieChartWidget].
   final double badgePositionPercentageOffset;
 
   /// Copies current [PieChartSectionData] to a new [PieChartSectionData],
@@ -269,7 +269,7 @@ class PieChartSectionData {
   }
 }
 
-/// Holds data to handle touch events, and touch responses in the [PieChart].
+/// Holds data to handle touch events, and touch responses in the [PieChartWidget].
 ///
 /// There is a touch flow, explained [here](https://github.com/imaNNeo/fl_chart/blob/master/repo_files/documentations/handle_touches.md)
 /// in a simple way, each chart's renderer captures the touch events, and passes the pointerEvent
@@ -324,10 +324,10 @@ class PieTouchedSection with EquatableMixin {
   /// touch happened on this position
   final int touchedSectionIndex;
 
-  /// touch happened with this angle on the [PieChart]
+  /// touch happened with this angle on the [PieChartWidget]
   final double touchAngle;
 
-  /// touch happened with this radius on the [PieChart]
+  /// touch happened with this radius on the [PieChartWidget]
   final double touchRadius;
 
   /// Used for equality check, see [EquatableMixin].
@@ -340,12 +340,12 @@ class PieTouchedSection with EquatableMixin {
       ];
 }
 
-/// Holds information about touch response in the [PieChart].
+/// Holds information about touch response in the [PieChartWidget].
 ///
 /// You can override [PieTouchData.touchCallback] to handle touch events,
 /// it gives you a [PieTouchResponse] and you can do whatever you want.
 class PieTouchResponse extends BaseTouchResponse {
-  /// If touch happens, [PieChart] processes it internally and passes out a [PieTouchResponse]
+  /// If touch happens, [PieChartWidget] processes it internally and passes out a [PieTouchResponse]
   PieTouchResponse(this.touchedSection) : super();
 
   /// Contains information about touched section, like index, angle, radius, ...

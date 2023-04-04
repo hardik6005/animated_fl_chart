@@ -1,135 +1,178 @@
+import 'dart:developer';
+
 import 'package:animated_fl_chart/animated_fl_chart.dart';
-import 'package:animated_fl_chart/main_class/src/chart/base/axis_chart/axis_chart_scaffold_widget.dart';
-import 'package:animated_fl_chart/main_class/src/chart/line_chart/line_chart_renderer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Renders a line chart as a widget, using provided [LineChartData].
-class LineChart extends ImplicitlyAnimatedWidget {
-  /// [data] determines how the [LineChart] should be look like,
-  /// when you make any change in the [LineChartData], it updates
-  /// new values with animation, and duration is [swapAnimationDuration].
-  /// also you can change the [swapAnimationCurve]
-  /// which default is [Curves.linear].
+enum RenderAnimationType { line, height }
+
+class LineChart extends StatefulWidget {
   const LineChart(
     this.data, {
     this.chartRendererKey,
     super.key,
-    Duration swapAnimationDuration = const Duration(milliseconds: 150),
-    Curve swapAnimationCurve = Curves.linear,
+    this.swapAnimationDuration = const Duration(milliseconds: 500),
+    this.swapAnimationCurve = Curves.linear,
+    this.randerAnimation = false,
+    this.initialShowingBarGroups,
+/*
+    this.renderAnimationType = RenderAnimationType.height,
+*/
   }) : super(
-          duration: swapAnimationDuration,
-          curve: swapAnimationCurve,
+        // duration: swapAnimationDuration,
+        // curve: swapAnimationCurve,
         );
 
-  /// Determines how the [LineChart] should be look like.
   final LineChartData data;
 
-  /// We pass this key to our renderers which are supposed to
-  /// render the chart itself (without anything around the chart).
   final Key? chartRendererKey;
 
-  /// Creates a [LineChartState]
+  final Duration? swapAnimationDuration;
+  final Curve? swapAnimationCurve;
+  final bool? randerAnimation;
+  final List<LineChartBarData>? initialShowingBarGroups;
+
   @override
-  LineChartState createState() => LineChartState();
+  State<StatefulWidget> createState() => LineChartState();
 }
 
-class LineChartState extends AnimatedWidgetBaseState<LineChart> {
-  /// we handle under the hood animations (implicit animations) via this tween,
-  /// it lerps between the old [LineChartData] to the new one.
-  LineChartDataTween? _lineChartDataTween;
+class LineChartState extends State<LineChart> {
+  final Color leftBarColor = const Color(0xFFFFC300);
+  final Color rightBarColor = const Color(0xFFE80054);
+  final Color endBarColor = const Color(0xFF3BFF49);
+  final Color avgColor = const Color(0xFFFF683B);
 
-  /// If [LineTouchData.handleBuiltInTouches] is true, we override the callback to handle touches internally,
-  /// but we need to keep the provided callback to notify it too.
-  BaseTouchCallback<LineTouchResponse>? _providedTouchCallback;
+  List<LineChartBarData> initialShowingBarGroups = [];
 
-  final List<ShowingTooltipIndicators> _showingTouchedTooltips = [];
+  bool isPlaying = false;
 
-  final Map<int, List<int>> _showingTouchedIndicators = {};
+  int touchedGroupIndex = -1;
+
+  int spotLenght = 0;
+  int spotIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    initialData();
+
+    if (widget.randerAnimation!) {
+      Future.delayed(Duration(milliseconds: 150), () {
+        setState(() {
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+            refreshState();
+          }
+        });
+      });
+    }
+  }
+
+  void initialData() {
+    // log("DATA : " + widget.data.barGroups.toString());
+    List<LineChartBarData> barChartGroupData = [];
+
+    log("HEREEEEE : " + widget.data.lineBarsData.toString());
+
+    // if (widget.renderAnimationType.name == "height") {
+    if (widget.initialShowingBarGroups == null ||
+        widget.initialShowingBarGroups!.isEmpty) {
+      widget.data.lineBarsData.asMap().forEach((key1, value) {
+        List<AFlSpot> barChartRodData = [];
+        widget.data.lineBarsData[key1].spots.asMap().forEach((key2, value) {
+          barChartRodData.add(AFlSpot(
+              widget.data.lineBarsData[key1].spots[key2].x,
+              /* widget.data.lineBarsData[key1].spots[key2].y,*/ 0));
+        });
+
+        barChartGroupData.add(
+            widget.data.lineBarsData[key1].copyWith(spots: barChartRodData));
+      });
+    } else {
+      barChartGroupData.addAll(widget.initialShowingBarGroups!);
+    }
+
+    initialShowingBarGroups.addAll(barChartGroupData);
+
+    /*} else {
+      spotLenght = widget.data.lineBarsData[0].spots.length;
+      renderLineMethod();
+    }*/
+  }
+
+/*
+  void renderLineMethod() {
+    //widget.data.lineBarsData.asMap().forEach((key1, value) {
+    List<AFlSpot> barChartRodData = [];
+    // widget.data.lineBarsData[0].spots.asMap().forEach((key2, value) {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      renderLineDelay(barChartRodData);
+    });
+    // });
+    //});
+  }
+
+  renderLineDelay(List<AFlSpot> barChartRodData) {
+    if (initialShowingBarGroups.isEmpty) {
+      barChartRodData.add(AFlSpot(
+        widget.data.lineBarsData[0].spots[spotIndex].x,
+        widget.data.lineBarsData[0].spots[spotIndex].y,
+      ));
+      initialShowingBarGroups
+          .add(widget.data.lineBarsData[0].copyWith(spots: barChartRodData));
+    } else {
+      initialShowingBarGroups[0].spots.add(AFlSpot(
+            widget.data.lineBarsData[0].spots[spotIndex].x,
+            widget.data.lineBarsData[0].spots[spotIndex].y,
+          ));
+    }
+    if (spotIndex != spotLenght - 1) {
+      spotIndex++;
+      log("HARDDDD : " + initialShowingBarGroups.toString());
+      renderLineMethod();
+      setState(() {});
+    }
+  }
+
+  */
+  Future<dynamic> refreshState() async {
+    setState(() {});
+    await Future<dynamic>.delayed(
+      widget.swapAnimationDuration! + const Duration(milliseconds: 50),
+    );
+    if (isPlaying) {
+      await refreshState();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final showingData = _getData();
-
-    return AxisChartScaffoldWidget(
-      chart: LineChartLeaf(
-        data: _withTouchedIndicators(_lineChartDataTween!.evaluate(animation)),
-        targetData: _withTouchedIndicators(showingData),
-        key: widget.chartRendererKey,
+    return LineChartWidget(
+      LineChartData(
+        maxY: widget.data.maxY,
+        maxX: widget.data.maxX,
+        minX: widget.data.minX,
+        baselineX: widget.data.baselineX,
+        baselineY: widget.data.baselineY,
+        lineTouchData: widget.data.lineTouchData,
+        titlesData: widget.data.titlesData,
+        borderData: widget.data.borderData,
+        gridData: widget.data.gridData,
+        backgroundColor: widget.data.backgroundColor,
+        extraLinesData: widget.data.extraLinesData,
+        minY: widget.data.minY,
+        rangeAnnotations: widget.data.rangeAnnotations,
+        betweenBarsData: widget.data.betweenBarsData,
+        clipData: widget.data.clipData,
+        lineBarsData: widget.randerAnimation!
+            ? isPlaying
+                ? widget.data.lineBarsData
+                : initialShowingBarGroups
+            : widget.data.lineBarsData,
+        showingTooltipIndicators: widget.data.showingTooltipIndicators,
       ),
-      data: showingData,
+      swapAnimationDuration: widget.swapAnimationDuration!,
+      swapAnimationCurve: widget.swapAnimationCurve!,
+      chartRendererKey: widget.chartRendererKey,
     );
-  }
-
-  LineChartData _withTouchedIndicators(LineChartData lineChartData) {
-    if (!lineChartData.lineTouchData.enabled ||
-        !lineChartData.lineTouchData.handleBuiltInTouches) {
-      return lineChartData;
-    }
-
-    return lineChartData.copyWith(
-      showingTooltipIndicators: _showingTouchedTooltips,
-      lineBarsData: lineChartData.lineBarsData.map((barData) {
-        final index = lineChartData.lineBarsData.indexOf(barData);
-        return barData.copyWith(
-          showingIndicators: _showingTouchedIndicators[index] ?? [],
-        );
-      }).toList(),
-    );
-  }
-
-  LineChartData _getData() {
-    final lineTouchData = widget.data.lineTouchData;
-    if (lineTouchData.enabled && lineTouchData.handleBuiltInTouches) {
-      _providedTouchCallback = lineTouchData.touchCallback;
-      return widget.data.copyWith(
-        lineTouchData: widget.data.lineTouchData
-            .copyWith(touchCallback: _handleBuiltInTouch),
-      );
-    }
-    return widget.data;
-  }
-
-  void _handleBuiltInTouch(
-    AFlTouchEvent event,
-    LineTouchResponse? touchResponse,
-  ) {
-    _providedTouchCallback?.call(event, touchResponse);
-
-    if (!event.isInterestedForInteractions ||
-        touchResponse?.lineBarSpots == null ||
-        touchResponse!.lineBarSpots!.isEmpty) {
-      setState(() {
-        _showingTouchedTooltips.clear();
-        _showingTouchedIndicators.clear();
-      });
-      return;
-    }
-
-    setState(() {
-      final sortedLineSpots = List.of(touchResponse.lineBarSpots!)
-        ..sort((spot1, spot2) => spot2.y.compareTo(spot1.y));
-
-      _showingTouchedIndicators.clear();
-      for (var i = 0; i < touchResponse.lineBarSpots!.length; i++) {
-        final touchedBarSpot = touchResponse.lineBarSpots![i];
-        final barPos = touchedBarSpot.barIndex;
-        _showingTouchedIndicators[barPos] = [touchedBarSpot.spotIndex];
-      }
-
-      _showingTouchedTooltips
-        ..clear()
-        ..add(ShowingTooltipIndicators(sortedLineSpots));
-    });
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _lineChartDataTween = visitor(
-      _lineChartDataTween,
-      _getData(),
-      (dynamic value) =>
-          LineChartDataTween(begin: value as LineChartData, end: widget.data),
-    ) as LineChartDataTween?;
   }
 }

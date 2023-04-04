@@ -3,13 +3,7 @@ import 'package:animated_fl_chart/main_class/src/chart/bar_chart/bar_chart_rende
 import 'package:animated_fl_chart/main_class/src/chart/base/axis_chart/axis_chart_scaffold_widget.dart';
 import 'package:flutter/cupertino.dart';
 
-/// Renders a bar chart as a widget, using provided [BarChartData].
 class BarChartWidget extends ImplicitlyAnimatedWidget {
-  /// [data] determines how the [BarChartWidget] should be look like,
-  /// when you make any change in the [BarChartData], it updates
-  /// new values with animation, and duration is [swapAnimationDuration].
-  /// also you can change the [swapAnimationCurve]
-  /// which default is [Curves.linear].
   const BarChartWidget(
     this.data, {
     this.chartRendererKey,
@@ -21,25 +15,17 @@ class BarChartWidget extends ImplicitlyAnimatedWidget {
           curve: swapAnimationCurve,
         );
 
-  /// Determines how the [BarChartWidget] should be look like.
   final BarChartData data;
 
-  /// We pass this key to our renderers which are supposed to
-  /// render the chart itself (without anything around the chart).
   final Key? chartRendererKey;
 
-  /// Creates a [BarChartWidgetState]
   @override
   BarChartWidgetState createState() => BarChartWidgetState();
 }
 
 class BarChartWidgetState extends AnimatedWidgetBaseState<BarChartWidget> {
-  /// we handle under the hood animations (implicit animations) via this tween,
-  /// it lerps between the old [BarChartData] to the new one.
   BarChartDataTween? _barChartDataTween;
 
-  /// If [BarTouchData.handleBuiltInTouches] is true, we override the callback to handle touches internally,
-  /// but we need to keep the provided callback to notify it too.
   BaseTouchCallback<BarTouchResponse>? _providedTouchCallback;
 
   final Map<int, List<int>> _showingTouchedTooltips = {};

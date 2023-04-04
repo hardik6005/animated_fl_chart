@@ -41,8 +41,6 @@ class BarChartState extends State<BarChart> {
   final Duration animDuration = const Duration(milliseconds: 250);
   bool isPlaying = false;
 
-  int touchedGroupIndex = -1;
-
   @override
   void initState() {
     super.initState();
