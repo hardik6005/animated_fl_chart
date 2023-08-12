@@ -12,11 +12,11 @@ Currently, we have 2 examples of animation bar charts. **We updating soon for an
 
 **Chart 1:**
 
-![very good|312x197,10%](https://github.com/hardik6005/animated_fl_chart/blob/main/example/assets/gif/bar_chart_1.gif)
+![](https://github.com/hardik6005/animated_fl_chart/blob/main/example/assets/gif/bar_chart_1.gif)
 
 **Chart 2:**
 
-![very good|312x197,10%](https://github.com/hardik6005/animated_fl_chart/blob/main/example/assets/gif/bar_chart_2.gif)
+![](https://github.com/hardik6005/animated_fl_chart/blob/main/example/assets/gif/bar_chart_2.gif)
 
 
 ## Usage
