@@ -1,6 +1,6 @@
 name: animated_fl_chart
 description: Animated FL Chart is a highly customizable Flutter chart library that supports Line Chart, Bar Chart, Pie Chart, Scatter Chart, and Radar Chart. Chart with render animation.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/hardik6005/animated_fl_chart
 
 environment:
