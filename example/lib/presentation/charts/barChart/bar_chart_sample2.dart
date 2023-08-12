@@ -1,5 +1,5 @@
 import 'package:animated_fl_chart/animated_fl_chart.dart';
-import 'package:fl_chart_app/presentation/resources/app_resources.dart';
+import 'package:fl_chart_app/presentation/resources/app_colors.dart';
 import 'package:fl_chart_app/util/extensions/color_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,6 @@ class BarChartSample2State extends State<BarChartSample2> {
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
-  final Duration animDuration = const Duration(milliseconds: 250);
 
   int touchedGroupIndex = -1;
 
@@ -172,7 +171,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                   barGroups: showingBarGroups,
                   gridData: AFlGridData(show: true),
                 ),
-                swapAnimationDuration: animDuration,
+                animationDuration: 500,
                 randerAnimation: true,
               ),
             ),

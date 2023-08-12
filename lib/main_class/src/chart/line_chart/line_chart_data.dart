@@ -203,7 +203,9 @@ class LineChartBarData with EquatableMixin {
     try {
       firstValidSpot =
           this.spots.firstWhere((element) => element != AFlSpot.nullSpot);
-    } catch (e) {}
+    } catch (e) {
+      //Catch here
+    }
     if (firstValidSpot != null) {
       for (final spot in this.spots) {
         if (spot.isNull()) {

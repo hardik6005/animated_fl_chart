@@ -5,7 +5,7 @@ class BarChart extends StatefulWidget {
   const BarChart(this.data,
       {this.chartRendererKey,
       super.key,
-      this.swapAnimationDuration = const Duration(milliseconds: 150),
+      this.animationDuration = 150,
       this.swapAnimationCurve = Curves.linear,
       this.randerAnimation = false,
       this.initialShowingBarGroups})
@@ -21,7 +21,7 @@ class BarChart extends StatefulWidget {
   /// render the chart itself (without anything around the chart).
   final Key? chartRendererKey;
 
-  final Duration? swapAnimationDuration;
+  final int? animationDuration;
   final Curve? swapAnimationCurve;
   final bool? randerAnimation;
   final List<BarChartGroupData>? initialShowingBarGroups;
@@ -38,7 +38,7 @@ class BarChartState extends State<BarChart> {
 
   List<BarChartGroupData> initialShowingBarGroups = [];
 
-  final Duration animDuration = const Duration(milliseconds: 250);
+  Duration animDuration = const Duration(milliseconds: 250);
   bool isPlaying = false;
 
   @override
@@ -59,7 +59,7 @@ class BarChartState extends State<BarChart> {
   }
 
   void initialData() {
-    // log("DATA : " + widget.data.barGroups.toString());
+    animDuration = Duration(milliseconds: widget.animationDuration!);
     List<BarChartGroupData> barChartGroupData = [];
     if (widget.initialShowingBarGroups == null ||
         widget.initialShowingBarGroups!.isEmpty) {

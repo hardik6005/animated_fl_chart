@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:animated_fl_chart/animated_fl_chart.dart';
-import 'package:fl_chart_app/presentation/resources/app_resources.dart';
+import 'package:fl_chart_app/presentation/resources/app_colors.dart';
 import 'package:fl_chart_app/util/extensions/color_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +27,6 @@ class BarChartSample1 extends StatefulWidget {
 }
 
 class BarChartSample1State extends State<BarChartSample1> {
-  final Duration animDuration = const Duration(milliseconds: 250);
 
   int touchedIndex = -1;
 
@@ -43,7 +42,7 @@ class BarChartSample1State extends State<BarChartSample1> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const Text(
-                  'Mingguan',
+                  'Single Pole Chart',
                   style: TextStyle(
                     color: AppColors.contentColorGreen,
                     fontSize: 24,
@@ -51,27 +50,16 @@ class BarChartSample1State extends State<BarChartSample1> {
                   ),
                 ),
                 const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Grafik konsumsi kalori',
-                  style: TextStyle(
-                    color: AppColors.contentColorGreen.darken(),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 38,
+                  height: 15,
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: BarChart(
-                      mainBarData(),
-                      swapAnimationDuration: animDuration,
-                      randerAnimation: true,
-                      initialShowingBarGroups: showingGroupsZero(),
+                      mainBarData(), // Data set in chart
+                      animationDuration: 1000, // Animation time you want
+                      randerAnimation: true,//You need to pass just this if you want to animate graph
+                      initialShowingBarGroups: showingGroupsZero(), // Initial data of chart
                     ),
                   ),
                 ),

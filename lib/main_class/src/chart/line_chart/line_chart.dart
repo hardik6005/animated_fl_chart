@@ -56,7 +56,7 @@ class LineChartState extends State<LineChart> {
     initialData();
 
     if (widget.randerAnimation!) {
-      Future.delayed(Duration(milliseconds: 150), () {
+      Future.delayed(const Duration(milliseconds: 150), () {
         setState(() {
           isPlaying = !isPlaying;
           if (isPlaying) {
@@ -71,7 +71,7 @@ class LineChartState extends State<LineChart> {
     // log("DATA : " + widget.data.barGroups.toString());
     List<LineChartBarData> barChartGroupData = [];
 
-    log("HEREEEEE : " + widget.data.lineBarsData.toString());
+    log("HEREEEEE : ${widget.data.lineBarsData}");
 
     // if (widget.renderAnimationType.name == "height") {
     if (widget.initialShowingBarGroups == null ||
